@@ -1,1 +1,1022 @@
-# ke
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>课程时间 — Школьные предметы</title>
+<style>
+:root {
+--pink:#e94f78;
+--pink-dark:#bd244f;
+--pink-light:#fff0f4;
+--pink-border:#ffd0dc;
+--red:#a91f45;
+--text:#44212d;
+--muted:#8c6570;
+--white:#fff;
+--shadow:0 12px 32px rgba(169,31,69,.09);
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+margin:0;
+background:linear-gradient(160deg,#fff8fa,#ffeaf0 50%,#fff5f7);
+color:var(--text);
+font-family:Arial,"Noto Sans",sans-serif;
+line-height:1.6;
+}
+header {
+padding:45px 20px 38px;
+text-align:center;
+color:white;
+background:linear-gradient(125deg,#bd244f,#e94f78 60%,#f28da8);
+}
+header .small {
+font-size:.8rem;
+letter-spacing:.18em;
+text-transform:uppercase;
+}
+header h1 { font-size:clamp(2rem,6vw,3.3rem); margin:12px 0; }
+header p { margin:0 auto; max-width:650px; }
+nav {
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:9px;
+padding:14px;
+background:white;
+box-shadow:0 4px 16px #a91f4510;
+}
+nav a {
+padding:8px 12px;
+border-radius:30px;
+background:var(--pink-light);
+border:1px solid var(--pink-border);
+color:var(--red);
+font-size:.88rem;
+font-weight:bold;
+text-decoration:none;
+}
+nav a:hover { background:#ffe0e9; }
+main { max-width:1050px; margin:auto; padding:25px 16px 55px; }
+.intro,.note {
+padding:18px 21px;
+background:#fff;
+border:1px solid var(--pink-border);
+border-radius:17px;
+margin-bottom:22px;
+}
+.intro strong { color:var(--red); }
+.task {
+scroll-margin-top:20px;
+background:rgba(255,255,255,.94);
+border:1px solid var(--pink-border);
+border-radius:22px;
+padding:clamp(17px,3vw,29px);
+margin:23px 0;
+box-shadow:var(--shadow);
+}
+.task-head { display:flex; gap:13px; align-items:flex-start; margin-bottom:20px; }
+.task-number {
+display:grid;
+place-items:center;
+flex:0 0 44px;
+height:44px;
+border-radius:14px;
+color:white;
+font-weight:bold;
+background:linear-gradient(145deg,var(--pink),var(--red));
+}
+.task h2 { margin:0; color:var(--red); font-size:clamp(1.25rem,3vw,1.65rem); }
+.task-head p { margin:4px 0 0; color:var(--muted); }
+button {
+border:0;
+border-radius:12px;
+padding:10px 15px;
+font:inherit;
+font-weight:bold;
+cursor:pointer;
+transition:transform .15s,background .15s;
+}
+button:hover { transform:translateY(-1px); }
+button:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+.primary { background:var(--pink); color:white; }
+.primary:hover { background:var(--pink-dark); }
+.soft { background:#ffe3eb; color:var(--red); }
+.outline { background:white; color:var(--red); border:1px solid var(--pink-border); }
+.controls {
+display:flex;
+align-items:center;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+margin-top:17px;
+}
+.counter { min-width:65px; text-align:center; color:var(--muted); font-weight:bold; }
+.progress { height:7px; border-radius:99px; overflow:hidden; background:#ffe3eb; margin-top:16px; }
+.progress span { display:block; height:100%; background:linear-gradient(90deg,var(--pink),var(--red)); transition:width .2s; }
+.flashcard {
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:22px;
+align-items:center;
+padding:18px;
+border-radius:19px;
+border:1px solid #ffe0e8;
+background:linear-gradient(135deg,#fff7f9,#fff);
+}
+.image-box {
+min-height:220px;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+border-radius:15px;
+background:#fff0f4;
+text-align:center;
+}
+.image-box img { width:100%; height:240px; object-fit:contain; }
+.placeholder { padding:18px; color:#a44a65; }
+.flash-info { text-align:center; padding:10px; }
+.pill { display:inline-block; padding:4px 10px; border-radius:30px; background:#ffe3eb; color:var(--red); font-size:.85rem; font-weight:bold; }
+.flash-info h3 { font-size:clamp(2rem,5vw,3rem); margin:12px 0 0; }
+.pinyin { font-size:1.2rem; color:var(--pink-dark); margin:5px 0; }
+.translation { font-size:1.1rem; margin:6px 0; }
+.hint { font-size:.88rem; color:var(--muted); }
+.question-row { padding:13px 0; border-bottom:1px solid #ffe5eb; }
+.question-row:last-child { border-bottom:0; }
+select,.answer-input {
+max-width:100%;
+padding:9px 11px;
+border:1px solid var(--pink-border);
+border-radius:10px;
+background:#fff;
+color:var(--text);
+font:inherit;
+}
+.answer-input { width:min(100%,400px); }
+.options-grid,.gaps-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.exercise-card,.gap-card {
+border:1px solid #ffe0e8;
+border-radius:15px;
+padding:15px;
+background:#fffafd;
+min-width:0;
+}
+.exercise-card h3 { margin:0 0 9px; color:var(--red); font-size:1rem; }
+.option {
+display:flex;
+gap:9px;
+align-items:flex-start;
+padding:9px 10px;
+border:1px solid #f6d5de;
+border-radius:10px;
+background:white;
+cursor:pointer;
+margin:6px 0;
+}
+.option:has(input:checked) { background:#fff0f4; border-color:var(--pink); }
+.option input { accent-color:var(--pink-dark); margin-top:5px; }
+.word-bank { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 17px; }
+.word-chip { padding:6px 11px; border-radius:30px; background:#ffe3eb; color:var(--red); font-weight:bold; }
+.gap-card label { display:block; font-weight:bold; margin-bottom:9px; }
+.feedback { margin-top:13px; min-height:1.5em; font-weight:bold; }
+.feedback.good { color:#23794d; }
+.feedback.bad { color:var(--red); }
+.correct-note { margin-top:8px; color:var(--muted); font-size:.9rem; }
+
+/* Упражнение 4: слова в строку */
+.odd-list { display:flex; flex-direction:column; gap:12px; }
+.odd-row {
+display:flex;
+align-items:center;
+gap:12px;
+flex-wrap:wrap;
+padding:12px;
+border:1px solid #ffe0e8;
+border-radius:14px;
+background:#fffafd;
+}
+.odd-number { color:var(--red); font-weight:bold; white-space:nowrap; }
+.odd-words { display:flex; flex-wrap:wrap; gap:8px; flex:1; }
+.odd-words .option { display:inline-flex; margin:0; align-items:center; }
+
+.guess-image { min-height:145px; margin-bottom:12px; }
+.guess-image img { height:160px; }
+.guess-description { font-size:1.13rem; font-weight:bold; margin:10px 0 2px; }
+.guess-answer { margin-top:12px; }
+.schedule-table-wrap { overflow-x:auto; margin-bottom:20px; }
+.schedule-table {
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:12px;
+overflow:hidden;
+}
+.schedule-table th,.schedule-table td {
+padding:12px 10px;
+border:1px solid var(--pink-border);
+text-align:left;
+}
+.schedule-table th { background:#ffe3eb; color:var(--red); }
+.schedule-table td:first-child { font-weight:bold; white-space:nowrap; }
+.schedule-writing { display:flex; flex-direction:column; gap:13px; }
+.schedule-writing-row {
+padding:13px;
+border:1px solid #ffe0e8;
+border-radius:13px;
+background:#fffafd;
+}
+.schedule-writing-row label { display:block; font-weight:bold; margin-bottom:8px; }
+.schedule-writing-row .answer-input { width:100%; max-width:100%; }
+.schedule-result { margin-top:8px; font-size:.9rem; }
+.schedule-result.good { color:#23794d; }
+.schedule-result.bad { color:var(--red); }
+.schedule-output { margin-top:17px; padding:17px; border-radius:14px; background:var(--pink-light); }
+footer { text-align:center; padding:15px; color:var(--muted); }
+@media(max-width:650px) {
+nav { position:static; }
+.flashcard { grid-template-columns:1fr; }
+.image-box { min-height:190px; }
+.image-box img { height:200px; }
+.options-grid,.gaps-grid { grid-template-columns:1fr; }
+.task { border-radius:17px; }
+.schedule-table th,.schedule-table td { padding:9px 7px; font-size:.9rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="small">中文 · 词汇练习</div>
+<h1>课程时间</h1>
+<p>Школьные предметы — учим слова, читаем пиньинь и тренируем лексику</p>
+</header>
+
+<nav>
+<a href="#task1">1 · Карточки</a>
+<a href="#task2">2 · Перевод</a>
+<a href="#task3">3 · Пропуски</a>
+<a href="#task4">4 · Лишнее слово</a>
+<a href="#task5">5 · Пиньинь</a>
+<a href="#task6">6 · Расписание</a>
+<a href="#task7">7 · Угадай урок</a>
+</nav>
+
+<main>
+<div class="intro">
+<strong>Как работать:</strong> сначала пролистай карточки и прочитай слова вслух. Затем выполни упражнения. Нажимай «Проверить ответы», чтобы увидеть результат.
+</div>
+
+<!-- ЗАДАНИЕ 1: КАРТОЧКИ -->
+<section class="task" id="task1">
+<div class="task-head">
+<div class="task-number">01</div>
+<div>
+<h2>认识课程 — Знакомство с предметами</h2>
+<p>Слева картинка, справа слово, пиньинь и перевод. Перелистывай карточки.</p>
+</div>
+</div>
+<div class="flashcard">
+<div class="image-box" id="flashImage">
+<div class="placeholder">🖼️<br>Место для картинки<br><span class="hint">Добавь URL в массив subjects внизу кода</span></div>
+</div>
+<div class="flash-info">
+<span class="pill" id="cardNumber">1 / 10</span>
+<h3 id="cardChinese">数学课</h3>
+<p class="pinyin" id="cardPinyin">shùxué kè</p>
+<p class="translation" id="cardTranslation">Математика</p>
+</div>
+</div>
+<div class="controls">
+<button class="soft" id="prevCard" type="button">← Назад</button>
+<span class="counter" id="cardCounter">1 из 10</span>
+<button class="primary" id="nextCard" type="button">Вперёд →</button>
+</div>
+<div class="progress"><span id="cardProgress" style="width:10%"></span></div>
+
+</section>
+
+<!-- ЗАДАНИЕ 2: ПЕРЕВОД -->
+<section class="task" id="task2">
+<div class="task-head">
+<div class="task-number">02</div>
+<div>
+<h2>Выбери перевод</h2>
+<p>Выбери правильный русский перевод каждого китайского слова.</p>
+</div>
+</div>
+<div id="translationQuestions"></div>
+<div class="controls">
+<button class="primary" id="checkTranslation">Проверить ответы</button>
+<button class="outline" id="resetTranslation">Начать заново</button>
+</div>
+<div class="feedback" id="translationFeedback" aria-live="polite"></div>
+</section>
+
+<!-- ЗАДАНИЕ 3: ПРОПУСКИ -->
+<section class="task" id="task3">
+<div class="task-head">
+<div class="task-number">03</div>
+<div>
+<h2>Заполни пропуски</h2>
+<p>Впиши недостающий иероглиф. Смайлики помогут вспомнить предмет.</p>
+</div>
+</div>
+<div class="word-bank">
+<span class="word-chip">课 kè</span>
+<span class="word-chip">史️ shǐ</span>
+<span class="word-chip">术 shù</span>
+<span class="word-chip">语️ yǔ</span>
+<span class="word-chip">育 yù</span>
+<span class="word-chip">乐 yuè</span>
+<span class="word-chip">理 lǐ</span>
+<span class="word-chip">学 xué</span>
+</div>
+<div id="gapQuestions" class="gaps-grid"></div>
+<div class="controls">
+<button class="primary" id="checkGaps">Проверить ответы</button>
+<button class="outline" id="resetGaps">Очистить</button>
+</div>
+<div class="feedback" id="gapFeedback" aria-live="polite"></div>
+</section>
+
+<!-- ЗАДАНИЕ 4: ЛИШНЕЕ СЛОВО -->
+<section class="task" id="task4">
+<div class="task-head">
+<div class="task-number">04</div>
+<div>
+<h2>找出不同的词 — Найди лишнее слово</h2>
+<p>В каждой строке три школьных предмета и одно лишнее слово. Выбери лишнее.</p>
+</div>
+</div>
+<div id="oddQuestions" class="odd-list"></div>
+<div class="controls">
+<button class="primary" id="checkOdd">Проверить ответы</button>
+<button class="outline" id="resetOdd">Начать заново</button>
+</div>
+<div class="feedback" id="oddFeedback" aria-live="polite"></div>
+</section>
+
+<!-- ЗАДАНИЕ 5: ПИНЬИНЬ -->
+<section class="task" id="task5">
+<div class="task-head">
+<div class="task-number">05</div>
+<div>
+<h2>Прочитай пиньинь</h2>
+<p>Выбери соответствующее китайское название предмета.</p>
+</div>
+</div>
+<div id="pinyinQuestions" class="options-grid"></div>
+<div class="controls">
+<button class="primary" id="checkPinyin">Проверить ответы</button>
+<button class="outline" id="resetPinyin">Начать заново</button>
+</div>
+<div class="feedback" id="pinyinFeedback" aria-live="polite"></div>
+</section>
+
+<!-- ЗАДАНИЕ 6: РАСПИСАНИЕ -->
+<section class="task" id="task6">
+<div class="task-head">
+<div class="task-number">06</div>
+<div>
+<h2>我的课程表 — Моё расписание</h2>
+<p>Посмотри на таблицу и напиши по-китайски по одному предложению про каждый день. Укажи день, время и предмет.</p>
+</div>
+</div>
+
+<div class="schedule-table-wrap">
+<table class="schedule-table">
+<thead>
+<tr>
+<th>星期几 — День</th>
+<th>时间 — Время</th>
+<th>课程 — Предмет</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>星期一</td><td>9:00</td><td>数学课</td></tr>
+<tr><td>星期二</td><td>10:30</td><td>英语课</td></tr>
+<tr><td>星期三</td><td>14:25</td><td>美术课</td></tr>
+<tr><td>星期四</td><td>8:10</td><td>汉语课</td></tr>
+<tr><td>星期五</td><td>15:05</td><td>音乐课</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note">
+<strong>Пример:</strong> 星期一早上九点我有数学课。
+</div>
+
+<div id="scheduleQuestions" class="schedule-writing"></div>
+
+<div class="controls">
+<button class="primary" id="makeSchedule">Проверить ответы</button>
+<button class="outline" id="resetSchedule">Очистить</button>
+</div>
+<div id="scheduleOutput" class="schedule-output" hidden></div>
+</section>
+
+<!-- ЗАДАНИЕ 7: КАРТИНКА + ОПИСАНИЕ -->
+<section class="task" id="task7">
+<div class="task-head">
+<div class="task-number">07</div>
+<div>
+<h2>看图猜课程 — Угадай предмет</h2>
+<p>Посмотри на картинку, прочитай описание и пиньинь. Напиши название урока по-китайски.</p>
+</div>
+</div>
+<div id="guessQuestions" class="options-grid"></div>
+<div class="controls">
+<button class="primary" id="checkGuess">Проверить ответы</button>
+<button class="outline" id="resetGuess">Очистить ответы</button>
+</div>
+<div class="feedback" id="guessFeedback" aria-live="polite"></div>
+</section>
+
+<footer>加油！Jiāyóu! — У тебя получится!</footer>
+</main>
+
+<script>
+const subjects = [
+{chinese:"数学课",pinyin:"shùxué kè",translation:"Математика",image:"https://kvant.dm-centre.ru/wp-content/uploads/2020/12/math-500x440.png"},
+{chinese:"历史课",pinyin:"lìshǐ kè",translation:"История",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8_PG4uqJjgilYmJOoSikJrfQsGwNsxYM7t3FVqZUjBshH2wCKJu6NTq0&s=10"},
+{chinese:"美术课",pinyin:"měishù kè",translation:"Изобразительное искусство",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQe4bbK54jMM7sGsPucMNLJnIy8r-8TjFq-lgmtrfMVryJr8oVZD29MEy3y&s=10"},
+{chinese:"俄语课",pinyin:"éyǔ kè",translation:"Русский язык",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ1KVDu6vrVygf3HyKHDnzzbmxaqprpAWVqo6ioUpTBw&s=10"},
+{chinese:"英语课",pinyin:"yīngyǔ kè",translation:"Английский язык",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOSJA-mjS1Gliug6TWFV554zIxp8UmM7236_jtAFAsOg&s=10"},
+{chinese:"汉语课",pinyin:"hànyǔ kè",translation:"Китайский язык",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhWhIoxobm8nblWW1_WpglxKe9IMyvTub-t-u4PVijOQ&s"},
+{chinese:"体育课",pinyin:"tǐyù kè",translation:"Физкультура",image:"https://img.magnific.com/free-vector/isometric-physical-education-lesson-flowchart-with-school-teachers-children-doing-exercises-playing-basketball-running-3d-vector-illustration_1284-75065.jpg?semt=ais_hybrid&w=740&q=80"},
+{chinese:"音乐课",pinyin:"yīnyuè kè",translation:"Музыка",image:"https://blog.lboro.ac.uk/wellbeing/wp-content/uploads/sites/48/2025/10/getty-music.jpg"},
+{chinese:"地理课",pinyin:"dìlǐ kè",translation:"География",image:"https://geographicbook.wordpress.com/wp-content/uploads/2026/08/4ada8-what-is-geography.jpg"},
+{chinese:"科学课",pinyin:"kēxué kè",translation:"Наука",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeFK8dI9EipWHNP2ayddWofyd5d0Ne-PEEP3qumFKCAA&s=10"}
+];
+
+const emojis = {
+"数学课":"🔢",
+"历史课":"🏛️",
+"美术课":"🎨",
+"俄语课":"🗣️",
+"英语课":"🗣️",
+"汉语课":"🗣️",
+"体育课":"🏃",
+"音乐课":"🎵",
+"地理课":"🌍",
+"科学课":"🔬"
+};
+
+const $ = id => document.getElementById(id);
+let currentCard = 0;
+
+function showCard(index) {
+const s = subjects[index];
+$("cardChinese").textContent = s.chinese;
+$("cardPinyin").textContent = s.pinyin;
+$("cardTranslation").textContent = s.translation;
+$("cardNumber").textContent = `${index+1} / ${subjects.length}`;
+$("cardCounter").textContent = `${index+1} из ${subjects.length}`;
+$("prevCard").disabled = index === 0;
+$("nextCard").disabled = index === subjects.length-1;
+$("cardProgress").style.width = `${(index+1)/subjects.length*100}%`;
+
+const box = $("flashImage");
+box.replaceChildren();
+
+if (s.image.trim()) {
+const img = document.createElement("img");
+img.src = s.image;
+img.alt = s.translation;
+img.onerror = () => {
+box.innerHTML = '<div class="placeholder">Не удалось загрузить картинку.<br>Проверь URL.</div>';
+};
+box.appendChild(img);
+} else {
+const placeholder = document.createElement("div");
+placeholder.className = "placeholder";
+placeholder.innerHTML = `🖼️<br>Место для картинки<br><span class="hint">Вставь URL в массив subjects</span>`;
+box.appendChild(placeholder);
+}
+}
+
+$("prevCard").addEventListener("click", () => {
+if (currentCard > 0) showCard(--currentCard);
+});
+$("nextCard").addEventListener("click", () => {
+if (currentCard < subjects.length-1) showCard(++currentCard);
+});
+
+const translations = [
+["数学课","Математика"],
+["历史课","История"],
+["美术课","Изобразительное искусство"],
+["俄语课","Русский язык"],
+["英语课","Английский язык"],
+["汉语课","Китайский язык"],
+["体育课","Физкультура"],
+["音乐课","Музыка"],
+["地理课","География"],
+["科学课","Наука"]
+];
+
+const oddRows = [
+{words:["数学课","苹果","历史课","美术课"],answer:"苹果",why:"苹果 — яблоко"},
+{words:["俄语课","英语课","牛奶","汉语课"],answer:"牛奶",why:"牛奶 — молоко"},
+{words:["音乐课","体育课","跑步","地理课"],answer:"跑步",why:"跑步 — бегать"},
+{words:["科学课","咖啡","数学课","历史课"],answer:"咖啡",why:"咖啡 — кофе"},
+{words:["美术课","汉语课","看书","英语课"],answer:"看书",why:"看书 — читать"},
+{words:["地理课","音乐课","米饭","体育课"],answer:"米饭",why:"米饭 — рис"},
+{words:["历史课","科学课","喝水","俄语课"],answer:"喝水",why:"喝水 — пить воду"},
+{words:["英语课","数学课","唱歌","汉语课"],answer:"唱歌",why:"唱歌 — петь"},
+{words:["土豆","体育课","美术课","音乐课"],answer:"土豆",why:"土豆 — картофель"},
+{words:["咖啡","果汁","地理课","牛奶"],answer:"地理课",why:"地理课 — школьный предмет"}
+];
+
+const pinyinItems = [
+{p:"shùxué kè",a:"数学课"},
+{p:"lìshǐ kè",a:"历史课"},
+{p:"měishù kè",a:"美术课"},
+{p:"éyǔ kè",a:"俄语课"},
+{p:"yīngyǔ kè",a:"英语课"},
+{p:"hànyǔ kè",a:"汉语课"},
+{p:"tǐyù kè",a:"体育课"},
+{p:"yīnyuè kè",a:"音乐课"},
+{p:"dìlǐ kè",a:"地理课"},
+{p:"kēxué kè",a:"科学课"}
+];
+
+const guessItems = [
+{
+answer:"数学课",image:"https://kvant.dm-centre.ru/wp-content/uploads/2020/12/math-500x440.png",
+desc:"我们在这节课上学习数字。",
+pinyin:"Wǒmen zài zhè jié kè shàng xuéxí shùzì."
+},
+{
+answer:"历史课",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8_PG4uqJjgilYmJOoSikJrfQsGwNsxYM7t3FVqZUjBshH2wCKJu6NTq0&s=10",
+desc:"我们学习以前的事。",
+pinyin:"Wǒmen xuéxí yǐqián de shì."
+},
+{
+answer:"美术课",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQe4bbK54jMM7sGsPucMNLJnIy8r-8TjFq-lgmtrfMVryJr8oVZD29MEy3y&s=10",
+desc:"我们在这节课上画画。",
+pinyin:"Wǒmen zài zhè jié kè shàng huà huà."
+},
+{
+answer:"俄语课",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJ1KVDu6vrVygf3HyKHDnzzbmxaqprpAWVqo6ioUpTBw&s=10",
+desc:"我们学习俄罗斯的语言。",
+pinyin:"Wǒmen xuéxí eluoside yuyan."
+},
+{
+answer:"英语课",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOSJA-mjS1Gliug6TWFV554zIxp8UmM7236_jtAFAsOg&s=10",
+desc:"我们学习英国的语言。",
+pinyin:"Wǒmen xuéxí yingguode yuyan."
+},
+{
+answer:"汉语课",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhWhIoxobm8nblWW1_WpglxKe9IMyvTub-t-u4PVijOQ&s",
+desc:"我们学习中国的语言。",
+pinyin:"Wǒmen xuéxí zhongguode yuyan."
+},
+{
+answer:"音乐课",image:"https://blog.lboro.ac.uk/wellbeing/wp-content/uploads/sites/48/2025/10/getty-music.jpg",
+desc:"我们在这节课上唱歌。",
+pinyin:"Wǒmen zài zhè jié kè shàng chàng gē."
+},
+{
+answer:"地理课",image:"https://geographicbook.wordpress.com/wp-content/uploads/2026/08/4ada8-what-is-geography.jpg",
+desc:"我们看地图，学习国家。",
+pinyin:"Wǒmen kàn dìtú, xuéxí guójiā."
+},
+{
+answer:"科学课",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeFK8dI9EipWHNP2ayddWofyd5d0Ne-PEEP3qumFKCAA&s=10",
+desc:"我们学习做实验。",
+pinyin:"Wǒmen xuéxí zuò shíyàn."
+}
+];
+
+function shuffle(array) {
+const result = [...array];
+for (let i=result.length-1; i>0; i--) {
+const j = Math.floor(Math.random()*(i+1));
+[result[i],result[j]] = [result[j],result[i]];
+}
+return result;
+}
+
+function normalize(value) {
+return value.trim().replace(/\s+/g,"").replace(/[。.!！?？]/g,"").toLowerCase();
+}
+
+function setFeedback(id, score, total) {
+const el=$(id);
+el.className="feedback "+(score===total?"good":"bad");
+el.textContent=`Результат: ${score} из ${total}.`;
+}
+
+function makeSelectOptions(correct, options) {
+return shuffle([correct,...shuffle(options.filter(x=>x!==correct)).slice(0,3)]);
+}
+
+/* Задание 2 */
+function renderTranslations() {
+const root=$("translationQuestions");
+root.replaceChildren();
+
+shuffle(translations).forEach((item,i)=>{
+const row=document.createElement("div");
+row.className="question-row";
+
+const label=document.createElement("label");
+const title=document.createElement("strong");
+title.textContent=`${i+1}. ${emojis[item[0]] || "📚"} ${item[0]} `;
+
+const select=document.createElement("select");
+select.id=`translation-${i}`;
+select.dataset.answer=item[1];
+
+const blank=document.createElement("option");
+blank.value="";
+blank.textContent="Выбери перевод…";
+select.appendChild(blank);
+
+shuffle(translations.map(x=>x[1])).forEach(translation=>{
+const option=document.createElement("option");
+option.value=translation;
+option.textContent=translation;
+select.appendChild(option);
+});
+
+label.append(title,select);
+row.appendChild(label);
+root.appendChild(row);
+});
+}
+
+$("checkTranslation").addEventListener("click",()=>{
+const selects=[...$("translationQuestions").querySelectorAll("select")];
+let score=0;
+
+selects.forEach(el=>{
+const ok=el.value===el.dataset.answer;
+el.style.borderColor=ok?"#26945e":(el.value?"#bd244f":"#ffd0dc");
+if(ok) score++;
+});
+
+setFeedback("translationFeedback",score,selects.length);
+});
+
+$("resetTranslation").addEventListener("click",()=>{
+renderTranslations();
+$("translationFeedback").textContent="";
+});
+
+/* Задание 3 */
+const gapItems=[
+{pattern:"数学__",answer:"课",full:"数学课",emoji:"🔢"},
+{pattern:"历__课",answer:"史",full:"历史课",emoji:"🏛️"},
+{pattern:"美术__",answer:"课",full:"美术课",emoji:"🎨"},
+{pattern:"__语课",answer:"俄",full:"俄语课",emoji:"🗣️"},
+{pattern:"英__课",answer:"语",full:"英语课",emoji:"🗣️"},
+{pattern:"汉__课",answer:"语",full:"汉语课",emoji:"🗣️"},
+{pattern:"体__课",answer:"育",full:"体育课",emoji:"🏃"},
+{pattern:"音乐__",answer:"课",full:"音乐课",emoji:"🎵"},
+{pattern:"地__课",answer:"理",full:"地理课",emoji:"🌍"},
+{pattern:"科__课",answer:"学",full:"科学课",emoji:"🔬"}
+];
+
+function renderGaps() {
+const root=$("gapQuestions");
+root.replaceChildren();
+
+gapItems.forEach((item,i)=>{
+const card=document.createElement("div");
+card.className="gap-card";
+
+const label=document.createElement("label");
+label.htmlFor=`gap-${i}`;
+label.textContent=`${i+1}. ${item.emoji} ${item.pattern}`;
+
+const input=document.createElement("input");
+input.className="answer-input";
+input.id=`gap-${i}`;
+input.dataset.answer=item.answer;
+input.placeholder="Впиши иероглиф";
+
+card.append(label,input);
+root.appendChild(card);
+});
+}
+
+$("checkGaps").addEventListener("click",()=>{
+const inputs=[...$("gapQuestions").querySelectorAll("input")];
+let score=0;
+
+inputs.forEach(input=>{
+const ok=normalize(input.value)===normalize(input.dataset.answer);
+input.style.borderColor=ok?"#26945e":(input.value?"#bd244f":"#ffd0dc");
+if(ok) score++;
+});
+
+setFeedback("gapFeedback",score,inputs.length);
+});
+
+$("resetGaps").addEventListener("click",()=>{
+renderGaps();
+$("gapFeedback").textContent="";
+});
+
+/* Задание 4 */
+function renderOdd() {
+const root=$("oddQuestions");
+root.replaceChildren();
+
+oddRows.forEach((row,i)=>{
+const line=document.createElement("div");
+line.className="odd-row";
+
+const number=document.createElement("span");
+number.className="odd-number";
+number.textContent=`${i+1})`;
+
+const words=document.createElement("div");
+words.className="odd-words";
+
+row.words.forEach(word=>{
+const label=document.createElement("label");
+label.className="option";
+
+const radio=document.createElement("input");
+radio.type="radio";
+radio.name=`odd-${i}`;
+radio.value=word;
+
+const text=document.createElement("span");
+text.textContent=word;
+
+label.append(radio,text);
+words.appendChild(label);
+});
+
+line.append(number,words);
+root.appendChild(line);
+});
+}
+
+$("checkOdd").addEventListener("click",()=>{
+let score=0;
+
+oddRows.forEach((row,i)=>{
+const selected=document.querySelector(`input[name="odd-${i}"]:checked`);
+const line=$("oddQuestions").children[i];
+
+let note=line.querySelector(".correct-note");
+if(!note) {
+note=document.createElement("div");
+note.className="correct-note";
+line.appendChild(note);
+}
+
+note.textContent=`Ответ: ${row.answer} — ${row.why}.`;
+
+if(selected && selected.value===row.answer) score++;
+});
+
+setFeedback("oddFeedback",score,oddRows.length);
+});
+
+$("resetOdd").addEventListener("click",()=>{
+renderOdd();
+$("oddFeedback").textContent="";
+});
+
+/* Задание 5 */
+function renderPinyin() {
+const root=$("pinyinQuestions");
+root.replaceChildren();
+
+shuffle(pinyinItems).forEach((item,i)=>{
+const card=document.createElement("div");
+card.className="exercise-card";
+
+const title=document.createElement("h3");
+title.textContent=`Слово ${i+1}`;
+
+const p=document.createElement("p");
+p.className="pinyin";
+p.textContent=item.p;
+
+card.append(title,p);
+
+makeSelectOptions(item.a,subjects.map(s=>s.chinese)).forEach(word=>{
+const label=document.createElement("label");
+label.className="option";
+
+const radio=document.createElement("input");
+radio.type="radio";
+radio.name=`pinyin-${i}`;
+radio.value=word;
+
+const text=document.createElement("span");
+text.textContent=word;
+
+label.append(radio,text);
+card.appendChild(label);
+});
+
+card.dataset.answer=item.a;
+root.appendChild(card);
+});
+}
+
+$("checkPinyin").addEventListener("click",()=>{
+const cards=[...$("pinyinQuestions").children];
+let score=0;
+
+cards.forEach(card=>{
+const selected=card.querySelector("input:checked");
+const ok=selected && selected.value===card.dataset.answer;
+if(ok) score++;
+
+let note=card.querySelector(".correct-note");
+if(!note) {
+note=document.createElement("div");
+note.className="correct-note";
+card.appendChild(note);
+}
+note.textContent="Ответ: "+card.dataset.answer;
+});
+
+setFeedback("pinyinFeedback",score,cards.length);
+});
+
+$("resetPinyin").addEventListener("click",()=>{
+renderPinyin();
+$("pinyinFeedback").textContent="";
+});
+
+/* Задание 6: ученик самостоятельно пишет предложения */
+const scheduleItems=[
+{
+day:"星期一",
+time:"早上九点",
+subject:"数学课",
+answer:"星期一早上九点我有数学课。"
+},
+{
+day:"星期二",
+time:"上午十点",
+subject:"英语课",
+answer:"星期二上午十点我有英语课。"
+},
+{
+day:"星期三",
+time:"下午两点",
+subject:"美术课",
+answer:"星期三下午两点我有美术课。"
+},
+{
+day:"星期四",
+time:"早上九点",
+subject:"汉语课",
+answer:"星期四早上九点我有汉语课。"
+},
+{
+day:"星期五",
+time:"下午三点",
+subject:"音乐课",
+answer:"星期五下午三点我有音乐课。"
+}
+];
+
+function renderSchedule() {
+const root=$("scheduleQuestions");
+root.replaceChildren();
+
+scheduleItems.forEach((item,i)=>{
+const row=document.createElement("div");
+row.className="schedule-writing-row";
+
+const label=document.createElement("label");
+label.htmlFor=`schedule-answer-${i}`;
+label.textContent=`${i+1}. ${item.day} — напиши предложение:`;
+
+const input=document.createElement("input");
+input.className="answer-input";
+input.id=`schedule-answer-${i}`;
+input.placeholder="Напиши предложение по-китайски";
+input.autocomplete="off";
+input.dataset.answer=item.answer;
+
+const result=document.createElement("div");
+result.className="schedule-result";
+result.id=`schedule-result-${i}`;
+
+row.append(label,input,result);
+root.appendChild(row);
+});
+
+$("scheduleOutput").hidden=true;
+$("scheduleOutput").textContent="";
+}
+
+$("makeSchedule").addEventListener("click",()=>{
+let score=0;
+
+scheduleItems.forEach((item,i)=>{
+const input=$(`schedule-answer-${i}`);
+const result=$(`schedule-result-${i}`);
+const ok=normalize(input.value)===normalize(item.answer);
+
+input.style.borderColor=ok?"#26945e":(input.value?"#bd244f":"#ffd0dc");
+result.className="schedule-result "+(ok?"good":"bad");
+
+if(ok) {
+score++;
+result.textContent="正确！Правильно!";
+} else {
+result.textContent=`Правильный вариант: ${item.answer}`;
+}
+});
+
+const output=$("scheduleOutput");
+output.hidden=false;
+output.textContent=`Результат: ${score} из ${scheduleItems.length}.`;
+output.className="schedule-output feedback "+(score===scheduleItems.length?"good":"bad");
+});
+
+$("resetSchedule").addEventListener("click",renderSchedule);
+
+/* Задание 7: картинка, китайское описание, пиньинь и поле ответа */
+function renderGuess() {
+const root=$("guessQuestions");
+root.replaceChildren();
+
+guessItems.forEach((item,i)=>{
+const card=document.createElement("div");
+card.className="exercise-card";
+
+const imageBox=document.createElement("div");
+imageBox.className="image-box guess-image";
+
+if(item.image.trim()) {
+const img=document.createElement("img");
+img.src=item.image;
+img.alt="Иллюстрация к заданию";
+img.onerror=()=>{
+imageBox.innerHTML='<div class="placeholder">Не удалось загрузить картинку. Проверь URL.</div>';
+};
+imageBox.appendChild(img);
+} else {
+const placeholder=document.createElement("div");
+placeholder.className="placeholder";
+placeholder.innerHTML='🖼️<br>Место для картинки<br><span class="hint">Вставь URL в guessItems</span>';
+imageBox.appendChild(placeholder);
+}
+
+const desc=document.createElement("p");
+desc.className="guess-description";
+desc.textContent=item.desc;
+
+const py=document.createElement("p");
+py.className="pinyin";
+py.textContent=item.pinyin;
+
+const input=document.createElement("input");
+input.className="answer-input guess-answer";
+input.id=`guess-${i}`;
+input.dataset.answer=item.answer;
+input.placeholder="Напиши название урока по-китайски";
+input.autocomplete="off";
+input.setAttribute("aria-label",`Ответ ${i+1}`);
+
+card.append(imageBox,desc,py,input);
+root.appendChild(card);
+});
+}
+
+$("checkGuess").addEventListener("click",()=>{
+const inputs=[...$("guessQuestions").querySelectorAll("input.answer-input")];
+let score=0;
+
+inputs.forEach(input=>{
+const ok=normalize(input.value)===normalize(input.dataset.answer);
+input.style.borderColor=ok?"#26945e":(input.value?"#bd244f":"#ffd0dc");
+if(ok) score++;
+});
+
+setFeedback("guessFeedback",score,inputs.length);
+});
+
+$("resetGuess").addEventListener("click",()=>{
+renderGuess();
+$("guessFeedback").textContent="";
+});
+
+/* Запуск всех заданий */
+renderTranslations();
+renderGaps();
+renderOdd();
+renderPinyin();
+renderSchedule();
+renderGuess();
+showCard(0);
+</script>
+</body>
+</html>
